@@ -1,12 +1,14 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Inject,
-} from '@nestjs/common';
+import { ForbiddenException, Inject } from '@nestjs/common';
 import { CompanyRepository } from '../repository/company.repository';
 import { Permission } from '../repository/model/user-company.schema';
 import { UserCompanyRepository } from '../repository/user-company.repository';
 import { Company } from './model/company.model';
+import { User } from '../../user/service/model/User.model';
+import { Project } from './model/project.model';
+import {
+  ProjectPriority,
+  ProjectStatus,
+} from '../repository/model/project.schema';
 
 export class CompanyService {
   constructor(
@@ -15,19 +17,59 @@ export class CompanyService {
   ) {}
 
   public async addCompany(name: string, industry?: string): Promise<Company> {
-    const existing = await this.companyRepository.findByName(name);
-    if (existing) {
-      throw new BadRequestException('Company name is taken');
-    }
+    const companyDocument = await this.companyRepository.createCompany(
+      name,
+      industry,
+    );
+    return Company.fromDocument(companyDocument);
+  }
 
-    return this.companyRepository.createCompany(name, industry);
+  public async getProjects(
+    reqUser: User,
+    companyId: string,
+  ): Promise<Project[]> {
+    await this.validateCompanyPermission(reqUser, companyId, Permission.READ);
+    const projects =
+      await this.companyRepository.getProjectsByCompanyId(companyId);
+    return projects.map((project) => Project.fromDocument(project));
+  }
+
+  public async addProject(
+    reqUser: User,
+    companyId: string,
+    name: string,
+    status: ProjectStatus,
+    tags: string[],
+    description?: string,
+    priority?: ProjectPriority,
+  ): Promise<Project> {
+    await this.validateCompanyPermission(reqUser, companyId, Permission.WRITE);
+    const project = await this.companyRepository.addProject(
+      companyId,
+      name,
+      status,
+      tags,
+      description,
+      priority,
+    );
+    return Project.fromDocument(project);
+  }
+
+  public async deleteProject(
+    reqUser: User,
+    companyId: string,
+    projectId: string,
+  ): Promise<void> {
+    await this.validateCompanyPermission(reqUser, companyId, Permission.DELETE);
+    return this.companyRepository.deleteProject(companyId, projectId);
   }
 
   private async validateCompanyPermission(
-    userId: string,
+    reqUser: User,
     companyId: string,
     permission: Permission,
   ) {
+    const userId = reqUser.id;
     const userCompanyEntity =
       await this.userCompanyRepository.findByUserAndCompany(userId, companyId);
     if (

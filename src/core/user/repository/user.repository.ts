@@ -1,28 +1,35 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserEntity } from './model/user.schema';
+import { UserDocument, UserEntity } from './model/user.schema';
 import { Model } from 'mongoose';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel(UserEntity.name) private userModel: Model<UserEntity>) {}
-
-  async findUserByEmail(email: string): Promise<UserEntity | null> {
-    return this.userModel.findOne({ email });
-  }
+  constructor(
+    @InjectModel(UserEntity.name) private userModel: Model<UserDocument>,
+  ) {}
 
   async createUser(
     email: string,
     name: string,
     password: string,
-  ): Promise<UserEntity> {
+  ): Promise<UserDocument> {
+    const existingUser = await this.findUserByEmail(email);
+    if (existingUser != null) {
+      throw new BadRequestException(`User with email: ${email} already exists`);
+    }
+
     return this.userModel.insertOne({ email, name, password });
   }
 
   async findUserByEmailAndPassword(
     email: string,
     password: string,
-  ): Promise<UserEntity | null> {
+  ): Promise<UserDocument | null> {
     return this.userModel.findOne({ email, password });
+  }
+
+  private async findUserByEmail(email: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ email });
   }
 }

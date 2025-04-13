@@ -9,14 +9,16 @@ export class AuthController {
   constructor(@Inject() private authService: AuthService) {}
 
   @Post('/signup')
-  async signup(@Body() body: SignUpDto): Promise<UserResponse> {
+  async signup(@Body() body: SignUpDto): Promise<{ user: UserResponse }> {
     const { name, email, password } = body;
-    return await this.authService.signUp(email, name, password);
+    const user = await this.authService.signUp(email, name, password);
+    return { user };
   }
 
   @Post('/login')
-  async login(@Body() body: LogInRequest): Promise<UserResponse> {
+  async login(@Body() body: LogInRequest): Promise<{ user: UserResponse }> {
     const { email, password } = body;
-    return this.authService.logIn(email, password);
+    const user = await this.authService.logIn(email, password);
+    return { user };
   }
 }
