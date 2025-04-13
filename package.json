@@ -11,10 +11,8 @@
     "start:rest:dev": "ts-node-dev --respawn src/rest/main.ts",
     "start:rest:debug": "node --inspect-brk src/rest/main.ts",
     "start:rest:prod": "node dist/rest/main.js",
-
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -23,8 +21,15 @@
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/mongoose": "^11.0.3",
     "@nestjs/platform-express": "^11.0.1",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "mongoose": "^8.13.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
