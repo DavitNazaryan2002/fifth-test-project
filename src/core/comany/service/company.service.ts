@@ -9,12 +9,44 @@ import {
   ProjectPriority,
   ProjectStatus,
 } from '../repository/model/project.schema';
+import { UserService } from '../../user/service/user.service';
 
 export class CompanyService {
   constructor(
     @Inject() private companyRepository: CompanyRepository,
     @Inject() private userCompanyRepository: UserCompanyRepository,
+    @Inject() private userService: UserService,
   ) {}
+
+  public async grantPermission(
+    reqUser: User,
+    companyId: string,
+    receiverId: string,
+    permission: Permission,
+  ): Promise<void> {
+    await this.validateCompanyPermission(reqUser, companyId, Permission.ADMIN);
+    const user = await this.userService.findUserById(receiverId);
+    await this.userCompanyRepository.addPermissionToUser(
+      user.id,
+      companyId,
+      permission,
+    );
+  }
+
+  public async revokePermission(
+    reqUser: User,
+    companyId: string,
+    receiverId: string,
+    permission: Permission,
+  ): Promise<void> {
+    await this.validateCompanyPermission(reqUser, companyId, Permission.ADMIN);
+    const user = await this.userService.findUserById(receiverId);
+    await this.userCompanyRepository.revokePermission(
+      user.id,
+      companyId,
+      permission,
+    );
+  }
 
   public async addCompany(name: string, industry?: string): Promise<Company> {
     const companyDocument = await this.companyRepository.createCompany(

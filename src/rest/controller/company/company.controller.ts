@@ -16,6 +16,7 @@ import { BasicAuthGuard } from '../../guards/basic-auth.guard';
 import { User } from '../../../core/user/service/model/User.model';
 import { AddProjectRequest } from './dto/request/add-project.dto';
 import { ProjectResponse } from './dto/response/project.dt';
+import { GrantPermissionRequest } from './dto/request/grant-permission.request';
 
 @Controller('/companies')
 export class CompanyController {
@@ -70,5 +71,37 @@ export class CompanyController {
   ): Promise<void> {
     const user = req['user'] as User;
     await this.companyService.deleteProject(user, companyId, projectId);
+  }
+
+  @Post('/:companyId/permissions')
+  @UseGuards(BasicAuthGuard)
+  async grantPermission(
+    @Req() req: Request,
+    @Param('companyId') companyId: string,
+    @Body() body: GrantPermissionRequest,
+  ): Promise<void> {
+    const user = req['user'] as User;
+    await this.companyService.grantPermission(
+      user,
+      companyId,
+      body.receiverId,
+      body.permission,
+    );
+  }
+
+  @Delete('/:companyId/permissions')
+  @UseGuards(BasicAuthGuard)
+  async revokePermission(
+    @Req() req: Request,
+    @Param('companyId') companyId: string,
+    @Body() body: GrantPermissionRequest,
+  ): Promise<void> {
+    const user = req['user'] as User;
+    await this.companyService.grantPermission(
+      user,
+      companyId,
+      body.receiverId,
+      body.permission,
+    );
   }
 }

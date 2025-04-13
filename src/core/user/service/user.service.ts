@@ -6,6 +6,18 @@ import { User } from './model/User.model';
 export class UserService {
   constructor(@Inject() private userRepository: UserRepository) {}
 
+  async findUserById(id: string) {
+    const userDocument = await this.userRepository.findById(id);
+    if (userDocument == null) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      id,
+      ...userDocument,
+    };
+  }
+
   async createUser(
     email: string,
     name: string,
