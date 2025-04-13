@@ -8,7 +8,12 @@ import { CompanyModule } from './comany/company.module';
 @Module({
   imports: [
     ConfigModule.forRoot(), // Automatically loads .env variables
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/Fifth'), AuthModule, UserModule, CompanyModule,
+    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/Fifth', {
+      onConnectionCreate: () => {
+        console.log("CONNECTED TO DATABASE")
+      }
+    }), AuthModule, UserModule, CompanyModule,
   ],
+  exports: [AuthModule, CompanyModule, UserModule]
 })
 export class CoreModule {}

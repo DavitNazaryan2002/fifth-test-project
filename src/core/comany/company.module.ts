@@ -8,6 +8,9 @@ import {
   UserCompanyEntity,
   UserCompanySchema,
 } from './repository/model/user-company.schema';
+import { CompanyService } from './service/company.service';
+import { CompanyRepository } from './repository/company.repository';
+import { UserCompanyRepository } from './repository/user-company.repository';
 
 @Module({
   imports: [
@@ -16,5 +19,7 @@ import {
       { name: UserCompanyEntity.name, schema: UserCompanySchema },
     ]),
   ],
+  providers: [CompanyService, CompanyRepository, UserCompanyRepository],
+  exports: [CompanyService]
 })
 export class CompanyModule {}

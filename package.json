@@ -7,9 +7,9 @@
   "license": "UNLICENSED",
   "scripts": {
     "build:rest": "nest build --webpack --webpackPath webpack.rest.config.js",
-    "start:rest": "ts-node src/rest/main.ts",
-    "start:rest:dev": "ts-node-dev --respawn src/rest/main.ts",
-    "start:rest:debug": "node --inspect-brk src/rest/main.ts",
+    "start:rest": "ts-node src/rest/rest.main.ts",
+    "start:rest:dev": "ts-node-dev --respawn src/rest/rest.main.ts",
+    "start:rest:debug": "node --inspect-brk src/rest/rest.main.ts",
     "start:rest:prod": "node dist/rest/main.js",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",

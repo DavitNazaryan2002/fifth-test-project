@@ -1,4 +1,5 @@
 import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
 export enum Permission {
   READ = 'READ',
