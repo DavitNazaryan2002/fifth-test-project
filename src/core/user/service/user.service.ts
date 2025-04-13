@@ -1,4 +1,9 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UserRepository } from '../repository/user.repository';
 import { User } from './model/User.model';
 
@@ -13,12 +18,10 @@ export class UserService {
   ): Promise<User> {
     const existingUser = await this.findUserByEmail(email);
     if (existingUser != null) {
-      throw new Error('User exists');
+      throw new BadRequestException(`User with email: ${email} already exists`);
     }
 
-    return User.fromUserEntity(
-      await this.userRepository.createUser(email, name, password),
-    );
+    return this.userRepository.createUser(email, name, password);
   }
 
   async findUserByEmailAndPassword(
@@ -30,9 +33,9 @@ export class UserService {
       password,
     );
     if (userEntity == null) {
-      throw new Error('User not found');
+      throw new NotFoundException('User not found');
     }
-    return User.fromUserEntity(userEntity);
+    return userEntity;
   }
 
   private async findUserByEmail(email: string): Promise<User | null> {
@@ -40,6 +43,6 @@ export class UserService {
     if (userEntity == null) {
       return null;
     }
-    return User.fromUserEntity(userEntity);
+    return userEntity;
   }
 }

@@ -8,7 +8,7 @@ export class AuthService {
 
   async signUp(email: string, name: string, password: string): Promise<User> {
     const hashedPassword = await this.hashPassword(password);
-    return  this.userService.createUser(email, name, hashedPassword);
+    return this.userService.createUser(email, name, hashedPassword);
   }
 
   async logIn(email: string, password: string): Promise<User> {
