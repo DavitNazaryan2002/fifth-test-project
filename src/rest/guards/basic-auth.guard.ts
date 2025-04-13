@@ -32,13 +32,8 @@ export class BasicAuthGuard implements CanActivate {
     }
 
     // Validate using AuthService
-    const user = await this.authService.logIn(email, password);
-    if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-
     // Attach user to request
-    (request as any).user = user;
+    (request as any).user = await this.authService.logIn(email, password);
 
     return true;
   }

@@ -115,7 +115,8 @@ export class CompanyService {
       await this.userCompanyRepository.findByUserAndCompany(userId, companyId);
     if (
       userCompanyEntity == null ||
-      !userCompanyEntity.permissions.includes(permission)
+      !userCompanyEntity.permissions.includes(permission) ||
+      !userCompanyEntity.permissions.includes(Permission.ADMIN)
     ) {
       throw new ForbiddenException(
         `User: ${userId} does not have permission ${permission} at the company: ${companyId}`,

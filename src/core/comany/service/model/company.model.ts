@@ -10,10 +10,11 @@ export class Company {
   static fromDocument(companyDocument: CompanyDocument): Company {
     return {
       id: companyDocument._id.toString(),
-      ...companyDocument,
       projects: companyDocument.projects.map((project) =>
         Project.fromDocument(project),
       ),
+      industry: companyDocument.industry,
+      name: companyDocument.name,
     };
   }
 }

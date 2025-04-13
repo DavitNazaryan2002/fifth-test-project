@@ -15,7 +15,11 @@ export class Project {
   static fromDocument(projectDocument: ProjectDocument): Project {
     return {
       id: projectDocument._id.toString(),
-      ...projectDocument,
+      name: projectDocument.name,
+      description: projectDocument.description,
+      status: projectDocument.status,
+      priority: projectDocument.priority,
+      tags: projectDocument.tags,
     };
   }
 }

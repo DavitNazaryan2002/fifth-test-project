@@ -26,14 +26,7 @@ export class UserRepository {
     return this.userModel.insertOne({ email, name, password });
   }
 
-  async findUserByEmailAndPassword(
-    email: string,
-    password: string,
-  ): Promise<UserDocument | null> {
-    return this.userModel.findOne({ email, password });
-  }
-
-  private async findUserByEmail(email: string): Promise<UserDocument | null> {
+  async findUserByEmail(email: string): Promise<UserDocument | null> {
     return this.userModel.findOne({ email });
   }
 }

@@ -12,10 +12,7 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    return {
-      id,
-      ...userDocument,
-    };
+    return User.fromDocument(userDocument);
   }
 
   async createUser(
@@ -28,26 +25,14 @@ export class UserService {
       name,
       password,
     );
-    return {
-      id: userDocument._id.toString(),
-      ...userDocument,
-    };
+    return User.fromDocument(userDocument);
   }
 
-  async findUserByEmailAndPassword(
-    email: string,
-    password: string,
-  ): Promise<User> {
-    const userDocument = await this.userRepository.findUserByEmailAndPassword(
-      email,
-      password,
-    );
+  async findUserByEmail(email: string): Promise<User> {
+    const userDocument = await this.userRepository.findUserByEmail(email);
     if (userDocument == null) {
       throw new NotFoundException('User not found');
     }
-    return {
-      id: userDocument._id.toString(),
-      ...userDocument,
-    };
+    return User.fromDocument(userDocument);
   }
 }
