@@ -30,7 +30,7 @@ export class CompanyController {
   ): Promise<{ company: CompanyResponse }> {
     const user = req['user'] as User;
     const { name, industry } = addCompanyDto;
-    const company = await this.companyService.addCompany(name, industry);
+    const company = await this.companyService.addCompany(user, name, industry);
     return { company };
   }
 
@@ -100,7 +100,7 @@ export class CompanyController {
     @Body() body: GrantPermissionRequest,
   ): Promise<void> {
     const user = req['user'] as User;
-    await this.companyService.grantPermission(
+    await this.companyService.revokePermission(
       user,
       companyId,
       body.receiverId,
