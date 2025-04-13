@@ -13,7 +13,7 @@ export enum ProjectPriority {
   LOW = 3,
 }
 
-@Schema({ _id: false }) // Optional: no separate _id for each project
+@Schema()
 export class ProjectEntity {
   @Prop({ required: true })
   name: string;

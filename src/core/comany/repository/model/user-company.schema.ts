@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export enum Permission {
@@ -8,10 +8,11 @@ export enum Permission {
   ADMIN = 'ADMIN',
 }
 
+@Schema()
 export class UserCompanyEntity extends Document {
   @Prop({ required: true })
   user_id: string;
-  @Prop({ required: true })
+  @Prop({ name: 'company_id', required: true })
   company_id: string;
   @Prop({
     type: [String],

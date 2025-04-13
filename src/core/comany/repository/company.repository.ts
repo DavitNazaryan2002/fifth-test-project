@@ -34,6 +34,9 @@ export class CompanyRepository {
     await this.companyModel.findOneAndUpdate(
       { _id: companyId },
       { $set: { projects: filteredProjects } },
+      {
+        new: true
+      }
     );
   }
 
@@ -69,7 +72,12 @@ export class CompanyRepository {
           },
         },
       },
+      {
+        new: true
+      }
     );
+
+    console.log(updated);
 
     return updated!.projects.find((project) => project.name === name)!;
   }

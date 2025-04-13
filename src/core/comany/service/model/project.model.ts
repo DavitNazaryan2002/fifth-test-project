@@ -13,6 +13,7 @@ export class Project {
   tags?: string[];
 
   static fromDocument(projectDocument: ProjectDocument): Project {
+    console.log(projectDocument);
     return {
       id: projectDocument._id.toString(),
       name: projectDocument.name,

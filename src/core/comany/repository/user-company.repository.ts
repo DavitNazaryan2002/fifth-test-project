@@ -15,16 +15,24 @@ export class UserCompanyRepository {
     companyId: string,
     permission: Permission,
   ): Promise<void> {
-    await this.userCompanyModel.updateOne(
+    await this.userCompanyModel.findOneAndUpdate(
       {
         user_id: userId,
         company_id: companyId,
       },
       {
+        $setOnInsert: {
+          user_id: userId,
+          company_id: companyId
+        },
         $addToSet: {
-          permissions: permission,
+          permissions: permission, // Ensures idempotent add
         },
       },
+      {
+        upsert: true,
+        new: true
+      }
     );
   }
 
@@ -33,7 +41,7 @@ export class UserCompanyRepository {
     companyId: string,
     permission: Permission,
   ): Promise<void> {
-    await this.userCompanyModel.updateOne(
+    await this.userCompanyModel.findOneAndUpdate(
       {
         user_id: userId,
         company_id: companyId,
@@ -43,6 +51,9 @@ export class UserCompanyRepository {
           permissions: permission,
         },
       },
+      {
+        new: true
+      }
     );
   }
 
