@@ -11,23 +11,38 @@ import {
 } from '@nestjs/common';
 import { CompanyService } from '../../../core/comany/service/company.service';
 import { AddCompanyRequest } from './dto/request/add-company.dto';
-import { CompanyResponse } from './dto/response/company.dto';
 import { BasicAuthGuard } from '../../guards/basic-auth.guard';
 import { User } from '../../../core/user/service/model/User.model';
 import { AddProjectRequest } from './dto/request/add-project.dto';
-import { ProjectResponse } from './dto/response/project.dt';
 import { GrantPermissionRequest } from './dto/request/grant-permission.request';
+import {
+  ApiBasicAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AddCompanyResponse } from './dto/response/add-company.response';
+import { GetProjectsResponse } from './dto/response/get-projects.response';
+import { AddProjectResponse } from './dto/response/add-project.response.dto';
 
 @Controller('/companies')
+@ApiTags('Companies and Projects')
+@ApiBasicAuth()
+@UseGuards(BasicAuthGuard)
 export class CompanyController {
   constructor(@Inject() private companyService: CompanyService) {}
 
   @Post('/')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Add Company',
+  })
+  @ApiResponse({
+    type: AddCompanyResponse,
+  })
   async addCompany(
     @Req() req: Request,
     @Body() addCompanyDto: AddCompanyRequest,
-  ): Promise<{ company: CompanyResponse }> {
+  ): Promise<AddCompanyResponse> {
     const user = req['user'] as User;
     const { name, industry } = addCompanyDto;
     const company = await this.companyService.addCompany(user, name, industry);
@@ -35,23 +50,33 @@ export class CompanyController {
   }
 
   @Get('/:companyId/projects')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Get Projects',
+  })
+  @ApiResponse({
+    type: GetProjectsResponse,
+  })
   async getProjects(
     @Req() req: Request,
     @Param('companyId') companyId: string,
-  ): Promise<{ projects: ProjectResponse[] }> {
+  ): Promise<GetProjectsResponse> {
     const user = req['user'] as User;
     const projects = await this.companyService.getProjects(user, companyId);
     return { projects };
   }
 
   @Post('/:companyId/projects')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Add Project',
+  })
+  @ApiResponse({
+    type: AddProjectResponse,
+  })
   async addProject(
     @Req() req: Request,
     @Param('companyId') companyId: string,
     @Body() body: AddProjectRequest,
-  ): Promise<{ project: ProjectResponse }> {
+  ): Promise<AddProjectResponse> {
     const user = req['user'] as User;
     const project = await this.companyService.addProject(
       user,
@@ -66,7 +91,9 @@ export class CompanyController {
   }
 
   @Delete('/:companyId/projects/:projectId')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Delete Project',
+  })
   async deleteProject(
     @Req() req: Request,
     @Param('companyId') companyId: string,
@@ -77,7 +104,9 @@ export class CompanyController {
   }
 
   @Post('/:companyId/permissions')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Grant Permission',
+  })
   async grantPermission(
     @Req() req: Request,
     @Param('companyId') companyId: string,
@@ -93,7 +122,9 @@ export class CompanyController {
   }
 
   @Delete('/:companyId/permissions')
-  @UseGuards(BasicAuthGuard)
+  @ApiOperation({
+    summary: 'Revoke Permission',
+  })
   async revokePermission(
     @Req() req: Request,
     @Param('companyId') companyId: string,
