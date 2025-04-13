@@ -23,9 +23,12 @@ export class CompanyController {
   constructor(@Inject() private companyService: CompanyService) {}
 
   @Post('/')
+  @UseGuards(BasicAuthGuard)
   async addCompany(
+    @Req() req: Request,
     @Body() addCompanyDto: AddCompanyRequest,
   ): Promise<{ company: CompanyResponse }> {
+    const user = req['user'] as User;
     const { name, industry } = addCompanyDto;
     const company = await this.companyService.addCompany(name, industry);
     return { company };

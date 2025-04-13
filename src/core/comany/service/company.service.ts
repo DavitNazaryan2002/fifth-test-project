@@ -48,10 +48,19 @@ export class CompanyService {
     );
   }
 
-  public async addCompany(name: string, industry?: string): Promise<Company> {
+  public async addCompany(
+    user: User,
+    name: string,
+    industry?: string,
+  ): Promise<Company> {
     const companyDocument = await this.companyRepository.createCompany(
       name,
       industry,
+    );
+    await this.userCompanyRepository.addPermissionToUser(
+      user.id,
+      companyDocument._id.toString(),
+      Permission.ADMIN,
     );
     return Company.fromDocument(companyDocument);
   }
